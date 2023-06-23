@@ -3,6 +3,7 @@ package br.com.devsuperior.clientmanager.services;
 import br.com.devsuperior.clientmanager.dto.ClientDTO;
 import br.com.devsuperior.clientmanager.entities.Client;
 import br.com.devsuperior.clientmanager.repositories.ClientRepository;
+import br.com.devsuperior.clientmanager.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,8 +24,10 @@ public class ClientService {
 
   @Transactional(readOnly = true)
   public ClientDTO findById(Long id) {
-    Optional<Client> result = repository.findById(id);
-    Client entity = result.get();
+    Client entity =
+        repository
+            .findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado"));
     return new ClientDTO(entity);
   }
 
